@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -eo pipefail
 
 CURRENT_YEAR=$(date +"%Y")
@@ -15,6 +17,7 @@ _configurations=(
   1 "cfg/base.yaml,cfg/rm2.base.yaml,cfg/template_breadcrumb.yaml,cfg/rm2.breadcrumb.default.yaml,cfg/rm2.breadcrumb.default.dailycal.yaml" "rm2.breadcrumb.default.dailycal"
   2 "cfg/base.yaml,cfg/rm2.base.yaml,cfg/template_months_on_side.yaml,cfg/rm2.mos.default.yaml"                                             "rm2.mos.default"
   2 "cfg/base.yaml,cfg/rm2.base.yaml,cfg/template_months_on_side.yaml,cfg/rm2.mos.default.yaml,cfg/rm2.mos.default.dailycal.yaml"           "rm2.mos.default.dailycal"
+  2 "cfg/base.yaml,cfg/rm2.base.yaml,cfg/rm2.minimal.yaml,cfg/template_months_on_side_minimal.yaml,cfg/rm2.mos.default.yaml"                "rm2.minimal.default"
 
   1 "cfg/base.yaml,cfg/rm2.base.yaml,cfg/rm2_ddvk.base.yaml,cfg/template_breadcrumb.yaml,cfg/rm2.breadcrumb.default.yaml"          "rm2_ddvk.breadcrumb.default"
   1 "cfg/base.yaml,cfg/rm2.base.yaml,cfg/rm2_ddvk.base.yaml,cfg/template_breadcrumb.yaml,cfg/rm2.breadcrumb.default.dailycal.yaml" "rm2_ddvk.breadcrumb.default.dailycal"
@@ -41,6 +44,17 @@ function createPDFs() {
 
       PLANNER_YEAR="${_year}" PASSES="${_passes}" CFG="${_cfg}" NAME="${_name}.${_year}" ./single.sh
     done
+  done
+}
+
+function createPolishMinimalPDFs() {
+  for _year in $CURRENT_YEAR $NEXT_YEAR; do
+    PLANNER_YEAR="${_year}" \
+      PASSES=2 \
+      TRANSLATION=polish \
+      CFG="cfg/base.yaml,cfg/rm2.base.yaml,cfg/rm2.minimal.yaml,cfg/template_months_on_side_minimal.yaml,cfg/rm2.mos.default.yaml" \
+      NAME="rm2.minimal.pl.default.${_year}" \
+      ./single.sh
   done
 }
 
@@ -89,6 +103,7 @@ for _idx in $(seq 0 2 $((_combinations_len-1))); do
   done
 
   createPDFs
+  createPolishMinimalPDFs
   mvDefaultTo "${_mvTo}"
   mv ./*pdf pile
 

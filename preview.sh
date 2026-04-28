@@ -1,4 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+DEFAULT_CONFIG_FILES='cfg/base.yaml,cfg/rm2.base.yaml,cfg/rm2.minimal.yaml,cfg/template_months_on_side_minimal.yaml,cfg/rm2.mos.default.yaml'
+DEFAULT_NAME_PREFIX='rm2.minimal.preview'
 
 # If no target year is passed in though argv[0], use next year as default value
 if [ $# -eq 1 ]; then
@@ -7,18 +12,20 @@ else
     TARGET_YEAR=$(expr $(date +"%Y") + 1)
 fi
 
-if [ -z "$CONFIG_FILES" ]; then
-  CONFIG_FILES='cfg/base.yaml,cfg/template_months_on_side.yaml,cfg/sn_a5x.mos.default.yaml,cfg/sn_a5x.mos.default.dailycal.yaml'
+if [ -z "${CONFIG_FILES:-}" ]; then
+  CONFIG_FILES="${DEFAULT_CONFIG_FILES}"
 fi
 
-NAME="planner.${TARGET_YEAR}"
+if [ -z "${NAME:-}" ]; then
+  NAME="${DEFAULT_NAME_PREFIX}.${TARGET_YEAR}"
+fi
 
 printf "📅 Building $(pwd)/${NAME}.pdf - "
 
-PLANNER_YEAR=${TARGET_YEAR} PASSES=2 CFG=${CONFIG_FILES} NAME=${NAME} PREVIEW=1 ./single.sh >/tmp/$NAME.log &
+PLANNER_YEAR=${TARGET_YEAR} PASSES=${PASSES:-2} CFG=${CONFIG_FILES} NAME=${NAME} TRANSLATION=${TRANSLATION:-} PREVIEW=1 ./single.sh >"/tmp/$NAME.log" &
 BUILDER_PID=$!
 
-tail --pid=$BUILDER_PID -f /tmp/$NAME.log | python3 parser.py &
+tail --pid=$BUILDER_PID -f "/tmp/$NAME.log" | python3 parser.py &
 OUTPUT_PID=$!
 
 
@@ -33,9 +40,10 @@ _exit() {
 }
 
 _term() {
-    kill -9 $BUILDER_PID $OUTPUT_PID >/dev/null 2>&1
-    # Also kill pdflatex child process
-    kill -9 $(ps -e -o pid,comm | grep pdflatex | awk '{print $1}') 1>/dev/null 2>&1
+    kill -9 "$BUILDER_PID" "$OUTPUT_PID" >/dev/null 2>&1
+    # Also kill LaTeX child processes.
+    pkill -9 -x xelatex >/dev/null 2>&1 || true
+    pkill -9 -x pdflatex >/dev/null 2>&1 || true
     _exit
 }
 

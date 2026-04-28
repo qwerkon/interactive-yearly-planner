@@ -1,6 +1,8 @@
-# latex-yearly-planner
+# interactive-yearly-planner
 
 PDF planner designed for e-ink devices.
+
+This fork adds a minimal reMarkable 2 planner variant and Polish translation support.
 
 See [discussions](https://github.com/kudrykv/latex-yearly-planner/discussions) for available planners and their variations.
 
@@ -27,6 +29,13 @@ The following was tested with [POP_OS 22.04.1 LTS](https://pop.system76.com/) un
 ### Install Dependencies
 1. [Go Language](https://go.dev/dl/)
 2. [LaTex](https://miktex.org/download) & [PDFLaTeX](https://www.latex-project.org/get/)
+
+On Debian/Ubuntu you can install the required packages with:
+
+```bash
+sudo apt update && sudo apt install golang-go texlive-xetex texlive-latex-extra texlive-lang-polish
+```
+
 3. From the project directory, run the following command after updating
  'PLANNER_YEAR' below. This should generate the PDF in the 'out' directory.
 <code>PLANNER_YEAR=2022 \
@@ -44,6 +53,120 @@ If you encounter any problems related to '.sty' files you likely need to
  install some Latex related dependencies. Copying the error and search using
   your favorite search engine should get you on track to resolving the
    dependency issues. All the best!
+
+### Minimal reMarkable 2 planner
+
+The minimal reMarkable 2 variant is language-independent and is configured with:
+
+```text
+cfg/rm2.base.yaml
+cfg/rm2.minimal.yaml
+cfg/template_months_on_side_minimal.yaml
+cfg/rm2.mos.default.yaml
+```
+
+It includes only:
+
+```text
+title
+annual
+daily
+```
+
+It excludes quarterly, monthly, weekly, daily reflection, daily notes, and indexed notes pages. Navigation links to disabled sections are hidden automatically, so the generated PDF does not contain dead links to removed views.
+
+Generate the English minimal RM2 planner:
+
+```bash
+PLANNER_YEAR=2026 \
+PASSES=2 \
+CFG="cfg/base.yaml,cfg/rm2.base.yaml,cfg/rm2.minimal.yaml,cfg/template_months_on_side_minimal.yaml,cfg/rm2.mos.default.yaml" \
+NAME="rm2.minimal.en.2026" \
+./single.sh
+```
+
+Generate the Polish minimal RM2 planner:
+
+```bash
+PLANNER_YEAR=2026 \
+PASSES=2 \
+TRANSLATION=polish \
+CFG="cfg/base.yaml,cfg/rm2.base.yaml,cfg/rm2.minimal.yaml,cfg/template_months_on_side_minimal.yaml,cfg/rm2.mos.default.yaml" \
+NAME="rm2.minimal.pl.2026" \
+./single.sh
+```
+
+The minimal RM2 configuration uses a 24-hour clock and starts weeks on Monday:
+
+```yaml
+weekstart: 1
+ampmtime: false
+```
+
+### Polish translation
+
+Polish translations are available through:
+
+```text
+translations/polish.json
+```
+
+Enable them with:
+
+```bash
+TRANSLATION=polish
+```
+
+The translation covers month names, weekday names, short labels, calendar labels, schedule labels, notes labels, and generated Go labels that appear after template rendering.
+
+### Workflow
+
+For everyday use, the intended flow is:
+
+1. Install or verify local dependencies:
+
+```bash
+./install.sh
+```
+
+2. Generate a quick preview while changing layouts or translations:
+
+```bash
+TRANSLATION=polish ./preview.sh 2026
+```
+
+3. Generate the final PDF:
+
+```bash
+TRANSLATION=polish ./build.sh 2026
+```
+
+4. Use `single.sh` directly only when you need a custom config stack:
+
+```bash
+PLANNER_YEAR=2026 \
+PASSES=2 \
+TRANSLATION=polish \
+CFG="cfg/base.yaml,cfg/rm2.base.yaml,cfg/rm2.minimal.yaml,cfg/template_months_on_side_minimal.yaml,cfg/rm2.mos.default.yaml" \
+NAME="rm2.minimal.pl.2026" \
+./single.sh
+```
+
+Generated PDF files are ignored by Git through `*.pdf` in `.gitignore`.
+
+### Scripts
+
+`install.sh` checks whether `go`, `python3`, and `xelatex` are available. On Debian/Ubuntu systems it installs missing dependencies with `apt-get`.
+
+`single.sh` is the low-level build entrypoint. It runs the Go planner generator, optionally runs `translate.py`, compiles the generated LaTeX with XeLaTeX, and copies the final PDF to `NAME.pdf`.
+
+`build.sh` is the default final-build wrapper. It defaults to the minimal RM2 config stack and writes progress output through `parser.py`. Override `CONFIG_FILES`, `NAME`, `PASSES`, or `TRANSLATION` when needed.
+
+`preview.sh` is the same wrapper as `build.sh`, but passes `PREVIEW=1` to the generator. Use it for faster iteration while editing templates or config.
+
+`parser.py` reads XeLaTeX output and prints compact page progress instead of streaming the full LaTeX log.
+
+`release.sh` builds the release matrix for the current and next year. It now includes `rm2.minimal.default` and `rm2.minimal.pl.default` variants in addition to the upstream planner variants.
 
 ### Alternative install
 
