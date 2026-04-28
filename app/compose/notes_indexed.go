@@ -8,6 +8,10 @@ import (
 )
 
 func NotesIndexed(cfg config.Config, tpls []string) (page.Modules, error) {
+	if !notesEnabled(cfg) {
+		return nil, nil
+	}
+
 	index := note.NewIndex(cfg.Year, cfg.Layout.Numbers.NotesOnPage, cfg.Layout.Numbers.NotesIndexPages)
 	year := cal.NewYear(cfg.WeekStart, cfg.Year)
 	modules := make(page.Modules, 0, 1)
@@ -23,7 +27,7 @@ func NotesIndexed(cfg config.Config, tpls []string) (page.Modules, error) {
 				"SideQuarters": year.SideQuarters(0),
 				"SideMonths":   year.SideMonths(0),
 				"Extra":        index.PrevNext(idx).WithTopRightCorner(cfg.ClearTopRightCorner),
-				"Extra2":       extra2(cfg.ClearTopRightCorner, false, true, nil, 0),
+				"Extra2":       extra2(cfg, false, true, nil, 0),
 			},
 		})
 	}
@@ -42,7 +46,7 @@ func NotesIndexed(cfg config.Config, tpls []string) (page.Modules, error) {
 					"Extra": nt.
 						PrevNext(cfg.Layout.Numbers.NotesOnPage * cfg.Layout.Numbers.NotesIndexPages).
 						WithTopRightCorner(cfg.ClearTopRightCorner),
-					"Extra2": extra2(cfg.ClearTopRightCorner, false, false, nil, idxPage+1),
+					"Extra2": extra2(cfg, false, false, nil, idxPage+1),
 				},
 			})
 		}

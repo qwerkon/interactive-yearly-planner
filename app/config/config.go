@@ -51,6 +51,54 @@ func (r Pages) WeeklyEnabled() bool {
 	return false
 }
 
+func (r Pages) MonthlyEnabled() bool {
+	for _, s := range r {
+		for _, block := range s.RenderBlocks {
+			if block.FuncName == "monthly" {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (r Pages) QuarterlyEnabled() bool {
+	for _, s := range r {
+		for _, block := range s.RenderBlocks {
+			if block.FuncName == "quarterly" {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (r Pages) DailyReflectEnabled() bool {
+	for _, s := range r {
+		for _, block := range s.RenderBlocks {
+			if block.FuncName == "daily_reflect" {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (r Pages) DailyNotesEnabled() bool {
+	for _, s := range r {
+		for _, block := range s.RenderBlocks {
+			if block.FuncName == "daily_notes" {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
 type RenderBlock struct {
 	FuncName string
 	Tpls     []string

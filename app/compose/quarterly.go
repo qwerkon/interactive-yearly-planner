@@ -11,8 +11,11 @@ func Quarterly(cfg config.Config, tpls []string) (page.Modules, error) {
 	modules := make(page.Modules, 0, 4)
 	year := cal.NewYear(cfg.WeekStart, cfg.Year)
 
-	hRight := header.Items{
-		header.NewTextItem("Notes").RefText("Notes Index"),
+	hRight := header.Items{}
+	if notesEnabled(cfg) {
+		hRight = header.Items{
+			header.NewTextItem("Notes").RefText("Notes Index"),
+		}
 	}
 
 	for _, quarter := range year.Quarters {
@@ -27,7 +30,7 @@ func Quarterly(cfg config.Config, tpls []string) (page.Modules, error) {
 				"SideQuarters": year.SideQuarters(quarter.Number),
 				"SideMonths":   year.SideMonths(0),
 				"Extra":        hRight.WithTopRightCorner(cfg.ClearTopRightCorner),
-				"Extra2":       extra2(cfg.ClearTopRightCorner, false, false, nil, 0),
+				"Extra2":       extra2(cfg, false, false, nil, 0),
 			},
 		})
 	}

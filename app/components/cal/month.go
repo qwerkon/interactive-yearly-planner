@@ -56,6 +56,16 @@ func (m *Month) MaybeName(large interface{}) string {
 	return `\multicolumn{8}{c}{` + hyper.Link(m.Month.String(), m.Month.String()) + `} \\ \hline`
 }
 
+func (m *Month) MaybeNameText(large interface{}) string {
+	larg, _ := large.(bool)
+
+	if larg { // likely on a monthly page; no need to print it again
+		return ""
+	}
+
+	return `\multicolumn{8}{c}{` + m.Month.String() + `} \\ \hline`
+}
+
 func (m *Month) WeekHeader(large interface{}) string {
 	full, _ := large.(bool)
 

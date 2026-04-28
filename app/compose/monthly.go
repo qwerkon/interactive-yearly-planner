@@ -24,7 +24,7 @@ func Monthly(cfg config.Config, tpls []string) (page.Modules, error) {
 					"SideQuarters": year.SideQuarters(quarter.Number),
 					"SideMonths":   year.SideMonths(month.Month),
 					"Extra":        month.PrevNext().WithTopRightCorner(cfg.ClearTopRightCorner),
-					"Extra2":       extra2(cfg.ClearTopRightCorner, false, false, nil, 0),
+					"Extra2":       extra2(cfg, false, false, nil, 0),
 				},
 			})
 		}

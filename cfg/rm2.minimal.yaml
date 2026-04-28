@@ -1,0 +1,10 @@
+weekstart: 1
+ampmtime: false
+
+layout:
+  numbers:
+    notesindexpages: 0
+    notesonpage: 0
+
+  lengths:
+    dailyrightwidth: 9.2cm

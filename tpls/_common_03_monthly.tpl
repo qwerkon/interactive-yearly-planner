@@ -1,4 +1,4 @@
-{{- template "monthTabularV2.tpl" dict "Month" .Body.Month "Large" true -}}
+{{- template "monthTabularV2.tpl" dict "Cfg" .Cfg "Month" .Body.Month "Large" true -}}
 \medskip
 
 {{ if $.Cfg.Dotted -}}
