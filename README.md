@@ -1,20 +1,8 @@
 # interactive-yearly-planner
 
-PDF planner designed for e-ink devices.
+PDF planner generator for e-ink devices, focused on reMarkable 2 layouts. It builds hyperlinked yearly planners from YAML profiles, with RM2 minimal, desk weekly, and desk monthly-weekly variants.
 
-This fork adds a minimal reMarkable 2 planner variant and Polish translation support.
-
-See [discussions](https://github.com/kudrykv/latex-yearly-planner/discussions) for available planners and their variations.
-
-### Documentation work in progress
-I am planning to write more documentation on how to use it and build it on your own.
-Spoiler alert: it won't be easy.
-Anyhow, more info on this will come.
-
-### Tackling
-
-I suggest looking at [rubify2](https://github.com/kudrykv/latex-yearly-planner/tree/rubify2) branch.
-It is an ongoing refactor, and it can generate MOS template.
+The Go CLI can generate previews, final PDFs, all profiles for a selected year, or one profile across a range of years. The planner supports Polish translation, public holidays from Nager.Date with local cache, custom YAML events, ICS imports, configurable RM2 weekly/monthly layouts, and LaTeX snapshot tests for regression coverage.
 
 ## Quick Start Guide
 ### Install Dependencies
