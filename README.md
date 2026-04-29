@@ -263,3 +263,25 @@ Generated PDF files from the Go CLI are written to `pdf/`. The directory is kept
 `install.sh` checks whether `go` and `xelatex` are available. On Debian/Ubuntu systems it installs missing dependencies with `apt-get`.
 
 `cmd/planner` is the primary build entrypoint. It runs the Go planner generator, applies translations, compiles the generated LaTeX with XeLaTeX, and copies the final PDF to `--name` or the profile-derived output name.
+
+### Debian package
+
+Build a local `.deb` package:
+
+```bash
+./scripts/build-deb.sh
+```
+
+Install it with APT:
+
+```bash
+sudo apt install ./dist/deb/planner_*.deb
+```
+
+The package installs a `planner` command in `/usr/bin`, application resources in `/usr/share/planner`, and declares the required LaTeX packages as Debian dependencies. Generated PDFs are still written to the current working directory under `pdf/`.
+
+You can override package metadata when building:
+
+```bash
+VERSION=0.1.0 ARCH=amd64 MAINTAINER="Your Name <you@example.com>" ./scripts/build-deb.sh
+```

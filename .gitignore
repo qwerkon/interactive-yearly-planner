@@ -1,6 +1,7 @@
 .vscode
 .idea/
 result
+dist/
 cache/
 pdf/*
 !pdf/.gitkeep

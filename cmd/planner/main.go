@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/kudrykv/latex-yearly-planner/app"
+	"github.com/kudrykv/latex-yearly-planner/app/resources"
 	"github.com/urfave/cli/v2"
 )
 
@@ -180,6 +181,8 @@ func runBuildForProfile(c *cli.Context, year int, preview bool, profileName stri
 	config := prof.Config
 	if c.String("config") != "" {
 		config = c.String("config")
+	} else {
+		config = resources.BundledList(config)
 	}
 
 	name := c.String("name")
@@ -310,7 +313,7 @@ func lastConfig(config string) string {
 
 func translate(language string) error {
 	language = strings.ToLower(language)
-	path := filepath.Join("translations", language+".json")
+	path := resources.Bundled(filepath.Join("translations", language+".json"))
 
 	content, err := os.ReadFile(path)
 	if err != nil {

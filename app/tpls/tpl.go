@@ -4,11 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 	"runtime"
 	"text/template"
 
 	"github.com/kudrykv/latex-yearly-planner/app/config"
+	"github.com/kudrykv/latex-yearly-planner/app/resources"
 )
 
 var tpl = template.Must(baseTemplate().ParseGlob(templateGlob()))
@@ -51,6 +53,12 @@ func baseTemplate() *template.Template {
 }
 
 func templateGlob() string {
+	if dir := resources.Bundled("tpls"); dir != "tpls" {
+		return filepath.Join(dir, "*")
+	} else if _, err := os.Stat(filepath.Join(dir, "document.tpl")); err == nil {
+		return filepath.Join(dir, "*")
+	}
+
 	_, file, _, ok := runtime.Caller(0)
 	if !ok {
 		return `./tpls/*`
