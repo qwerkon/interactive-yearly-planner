@@ -1,22 +1,56 @@
-name: "Build all PDFs"
+name: Build PDFs
+
 on:
   push:
+  workflow_dispatch:
+
 jobs:
   build-pdfs:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        build-output: ["pdf-all", "pdf-next"]
+        build-output: [pdf-all, pdf-next]
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v19
-      - name: Build PDFs
-        run: nix build .#${{ matrix.build-output }}
-      - name: Copy PDFs
-        run: cp result/*.pdf .
-      - name: Output PDFs
-        uses: actions/upload-artifact@v3
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
         with:
-          name: result
-          path: ./*.pdf
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install LaTeX dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            texlive-xetex \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-lang-polish
+
+      - name: Run tests
+        run: go test ./...
+
+      - name: Build next year PDFs
+        if: matrix.build-output == 'pdf-next'
+        run: |
+          year="$(date -d '+1 year' +%Y)"
+          go run ./cmd/planner build-all --year "${year}" --lang polish --country PL
+
+      - name: Build configured PDF range
+        if: matrix.build-output == 'pdf-all'
+        run: |
+          current_year="$(date +%Y)"
+          from_year=$((current_year - 1))
+          to_year=$((current_year + 4))
+          for year in $(seq "${from_year}" "${to_year}"); do
+            go run ./cmd/planner build-all --year "${year}" --lang polish --country PL
+          done
+
+      - name: Upload PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.build-output }}
+          path: pdf/*.pdf
           if-no-files-found: error
