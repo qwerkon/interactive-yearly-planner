@@ -103,6 +103,25 @@ weekstart: 1
 ampmtime: false
 ```
 
+### Desk weekly reMarkable 2 planner
+
+The desk weekly RM2 variant uses the reMarkable 2 page size in landscape orientation and adds a title page, annual page, and one compact weekly page per week. The weekly layout uses seven vertical day columns, hourly writing lines, and a small month calendar in the header.
+
+Public holidays can be marked by country using Nager.Date. Set `publicholidays.countrycodes` in the planner config, or override it with `PLANNER_PUBLIC_HOLIDAYS_COUNTRY_CODE` using one code or a comma-separated list like `PL,DE`. The desk weekly RM2 config uses `PL` by default, so public holidays are downloaded from `https://date.nager.at/api/v3/PublicHolidays/<year>/<country>` and shown in red.
+
+Holiday names from `localName` can be enabled in weekly day headers with `publicholidays.shownames: true` or `PLANNER_PUBLIC_HOLIDAYS_SHOW_NAMES=true`. This is disabled in the desk weekly RM2 config to avoid long holiday names wrapping in narrow columns.
+
+Generate the Polish desk weekly RM2 planner:
+
+```bash
+PLANNER_YEAR=2026 \
+PASSES=2 \
+TRANSLATION=polish \
+CFG="cfg/base.yaml,cfg/rm2.base.yaml,cfg/rm2.desk.weekly.yaml,cfg/template_desk_weekly_rm2.yaml,cfg/rm2.mos.default.yaml" \
+NAME="rm2.desk.weekly.pl.2026" \
+./single.sh
+```
+
 ### Polish translation
 
 Polish translations are available through:

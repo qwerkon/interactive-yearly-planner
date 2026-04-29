@@ -313,3 +313,7 @@ func (w *Week) Name() string {
 func (w *Week) Target() string {
 	return tex.Hypertarget(w.ref(), w.Name())
 }
+
+func (w *Week) Ref() string {
+	return w.ref()
+}

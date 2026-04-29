@@ -1,8 +1,10 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"strings"
 	"time"
 
@@ -20,6 +22,7 @@ type Config struct {
 	ClearTopRightCorner bool
 	AMPMTime            bool
 	AddLastHalfHour     bool
+	PublicHolidays      PublicHolidays
 
 	Pages Pages
 
@@ -29,6 +32,23 @@ type Config struct {
 type Debug struct {
 	ShowFrame bool
 	ShowLinks bool
+}
+
+type PublicHolidays struct {
+	CountryCode  string `env:"PLANNER_PUBLIC_HOLIDAYS_COUNTRY_CODE"`
+	CountryCodes []string
+	ShowNames    bool `env:"PLANNER_PUBLIC_HOLIDAYS_SHOW_NAMES"`
+	BaseURL      string
+
+	holidays map[string]PublicHoliday
+}
+
+type PublicHoliday struct {
+	Date        string   `json:"date"`
+	LocalName   string   `json:"localName"`
+	Name        string   `json:"name"`
+	CountryCode string   `json:"countryCode"`
+	Types       []string `json:"types"`
 }
 
 type Pages []Page
@@ -43,6 +63,18 @@ func (r Pages) WeeklyEnabled() bool {
 	for _, s := range r {
 		for _, block := range s.RenderBlocks {
 			if block.FuncName == "weekly" {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (r Pages) DailyEnabled() bool {
+	for _, s := range r {
+		for _, block := range s.RenderBlocks {
+			if block.FuncName == "daily" {
 				return true
 			}
 		}
@@ -182,5 +214,97 @@ func New(pathConfigs ...string) (Config, error) {
 		cfg.Year = time.Now().Year()
 	}
 
+	if err = cfg.PublicHolidays.Load(cfg.Year); err != nil {
+		return cfg, fmt.Errorf("public holidays load: %w", err)
+	}
+
 	return cfg, nil
+}
+
+func (p *PublicHolidays) Load(year int) error {
+	countryCodes := p.countryCodes()
+	if len(countryCodes) == 0 {
+		return nil
+	}
+
+	baseURL := strings.TrimRight(p.BaseURL, "/")
+	if baseURL == "" {
+		baseURL = "https://date.nager.at/api/v3"
+	}
+
+	p.holidays = make(map[string]PublicHoliday)
+	client := http.Client{Timeout: 10 * time.Second}
+	for _, countryCode := range countryCodes {
+		resp, err := client.Get(fmt.Sprintf("%s/PublicHolidays/%d/%s", baseURL, year, countryCode))
+		if err != nil {
+			return fmt.Errorf("%s: %w", countryCode, err)
+		}
+
+		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+			resp.Body.Close()
+			return fmt.Errorf("%s: unexpected status %s", countryCode, resp.Status)
+		}
+
+		var holidays []PublicHoliday
+		if err = json.NewDecoder(resp.Body).Decode(&holidays); err != nil {
+			resp.Body.Close()
+			return fmt.Errorf("%s: %w", countryCode, err)
+		}
+		resp.Body.Close()
+
+		for _, holiday := range holidays {
+			if holiday.IsPublic() {
+				p.holidays[holiday.Date] = holiday
+			}
+		}
+	}
+
+	return nil
+}
+
+func (p PublicHolidays) countryCodes() []string {
+	codes := make([]string, 0, len(p.CountryCodes)+1)
+	seen := map[string]bool{}
+
+	for _, code := range p.CountryCodes {
+		code = strings.ToUpper(strings.TrimSpace(code))
+		if code != "" && !seen[code] {
+			codes = append(codes, code)
+			seen[code] = true
+		}
+	}
+
+	for _, code := range strings.Split(p.CountryCode, ",") {
+		code = strings.ToUpper(strings.TrimSpace(code))
+		if code != "" && !seen[code] {
+			codes = append(codes, code)
+			seen[code] = true
+		}
+	}
+
+	return codes
+}
+
+func (p PublicHolidays) IsPublicHoliday(day time.Time) bool {
+	_, ok := p.Holiday(day)
+	return ok
+}
+
+func (p PublicHolidays) Holiday(day time.Time) (PublicHoliday, bool) {
+	if len(p.holidays) == 0 {
+		return PublicHoliday{}, false
+	}
+
+	holiday, ok := p.holidays[day.Format("2006-01-02")]
+	return holiday, ok
+}
+
+func (p PublicHoliday) IsPublic() bool {
+	for _, typ := range p.Types {
+		if typ == "Public" {
+			return true
+		}
+	}
+
+	return false
 }

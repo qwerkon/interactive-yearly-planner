@@ -13,7 +13,7 @@
   {{- range $i, $week := .Month.Weeks }}
   {{if and $.Cfg (not $.Cfg.Pages.WeeklyEnabled)}}{{$week.WeekNumberText $.Large}}{{else}}{{$week.WeekNumber $.Large}}{{end}} &
     {{- range $j, $day := $week.Days -}}
-      {{- $day.Day $.Today $.Large -}}
+      {{- $day.Day $.Today $.Large $.Cfg ($week.Ref) -}}
       {{- if eq $j 6 -}}
         \\ {{ if $.Large -}} \hline {{- end -}}
       {{- else -}} & {{- end -}}

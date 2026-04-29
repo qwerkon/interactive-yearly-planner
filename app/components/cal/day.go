@@ -8,6 +8,7 @@ import (
 
 	"github.com/kudrykv/latex-yearly-planner/app/components/header"
 	"github.com/kudrykv/latex-yearly-planner/app/components/hyper"
+	"github.com/kudrykv/latex-yearly-planner/app/config"
 	"github.com/kudrykv/latex-yearly-planner/app/tex"
 	"github.com/kudrykv/latex-yearly-planner/app/texx"
 )
@@ -17,15 +18,40 @@ type Day struct {
 	Time time.Time
 }
 
-func (d Day) Day(today, large interface{}) string {
+func (d Day) Day(today, large interface{}, args ...interface{}) string {
 	if d.Time.IsZero() {
 		return ""
 	}
 
+	ref := d.ref()
+	var cfg *config.Config
+	for _, arg := range args {
+		switch val := arg.(type) {
+		case config.Config:
+			cfg = &val
+			if !val.Pages.DailyEnabled() && val.Pages.WeeklyEnabled() {
+				ref = d.weekRef()
+			}
+		case string:
+			if val != "" {
+				ref = val
+			}
+		}
+	}
+
 	day := strconv.Itoa(d.Time.Day())
+	if d.Time.Weekday() == time.Saturday {
+		day = `\textcolor{gray!60!black}{` + day + `}`
+	}
+	if d.Time.Weekday() == time.Sunday {
+		day = `\textcolor{red!70!black}{` + day + `}`
+	}
+	if cfg != nil && cfg.PublicHolidays.IsPublicHoliday(d.Time) {
+		day = `\textcolor{red!70!black}{` + strconv.Itoa(d.Time.Day()) + `}`
+	}
 
 	if larg, _ := large.(bool); larg {
-		return `\hyperlink{` + d.ref() + `}{\begin{tabular}{@{}p{5mm}@{}|}\hfil{}` + day + `\\ \hline\end{tabular}}`
+		return `\hyperlink{` + ref + `}{\begin{tabular}{@{}p{5mm}@{}|}\hfil{}` + day + `\\ \hline\end{tabular}}`
 	}
 
 	if td, ok := today.(Day); ok {
@@ -34,7 +60,41 @@ func (d Day) Day(today, large interface{}) string {
 		}
 	}
 
-	return hyper.Link(d.ref(), day)
+	return hyper.Link(ref, day)
+}
+
+func (d Day) HeaderColor(cfg config.Config) string {
+	if cfg.PublicHolidays.IsPublicHoliday(d.Time) || d.Time.Weekday() == time.Sunday {
+		return "red!70!black"
+	}
+	if d.Time.Weekday() == time.Saturday {
+		return "gray!60!black"
+	}
+
+	return ""
+}
+
+func (d Day) HolidayLocalName(cfg config.Config) string {
+	if !cfg.PublicHolidays.ShowNames {
+		return ""
+	}
+
+	holiday, ok := cfg.PublicHolidays.Holiday(d.Time)
+	if !ok {
+		return ""
+	}
+
+	return holiday.LocalName
+}
+
+func (d Day) weekRef() string {
+	_, wn := d.Time.ISOWeek()
+	prefix := ""
+	if wn > 50 && d.Time.Month() == time.January {
+		prefix = "fw"
+	}
+
+	return prefix + "Week " + strconv.Itoa(wn)
 }
 
 func (d Day) ref(prefix ...string) string {

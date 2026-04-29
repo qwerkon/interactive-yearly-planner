@@ -1,0 +1,50 @@
+weekstart: 1
+ampmtime: false
+dotted: false
+addlasthalfhour: false
+cleartoprightcorner: true
+
+publicholidays:
+  countrycodes:
+    - PL
+  shownames: false
+
+layout:
+  paper:
+    width: 20.9cm
+    height: 15.6cm
+
+    reversemargins: false
+    marginparwidth: 0cm
+    marginparsep: 0cm
+
+    margin:
+      top: 0.28cm
+      bottom: 0.35cm
+      left: 1.4cm
+      right: 0.3cm
+
+  numbers:
+    arraystretch: 1.15
+    weeklylines: 12
+    dailybottomhour: 8
+    dailytophour: 19
+    notesindexpages: 0
+    notesonpage: 0
+    dotheightfull: 38
+    dotwidthfull: 30
+    dotwidthtwothirds: 20
+
+  lengths:
+    tabcolsep: 2pt
+    linethicknessdefault: .35pt
+    linethicknessthick: .75pt
+    lineheightbutline: \dimexpr4.1mm-.35pt
+    tricolsep: 3pt
+    headerresizebox: 5.5mm
+    headersidequarterswidth: 4cm
+    headersidemonthswidth: 14.5cm
+
+  colors:
+    gray: gray
+    lightgray: gray!45

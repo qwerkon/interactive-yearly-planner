@@ -108,9 +108,13 @@ def handle_weekly() -> None:
         text = file.read()
 
     replace = add_identifier(MONTHS, lambda x: "}{" + x + "}")
+    replace |= add_identifier(MONTHS, lambda x: r"\textbf{" + x)
+    replace |= add_identifier(MONTHS, lambda x: " / " + x + "}")
     replace |= add_identifier(WEEK, lambda x: "}{" + x)
     replace |= add_identifier(WEEKDAYS, lambda x: ", " + x + "}")
+    replace |= add_identifier(WEEKDAYS, lambda x: "{" + x + "}")
     replace |= add_identifier(NOTES, lambda x: "{" + x)
+    replace |= add_identifier(NOTES, lambda x: r"{\scriptsize " + x + "}")
     for english, spanish in replace.items():
         text = text.replace(english, spanish)
 
