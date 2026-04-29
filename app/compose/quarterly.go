@@ -1,10 +1,10 @@
 package compose
 
 import (
-	"github.com/kudrykv/latex-yearly-planner/app/components/cal"
-	"github.com/kudrykv/latex-yearly-planner/app/components/header"
-	"github.com/kudrykv/latex-yearly-planner/app/components/page"
-	"github.com/kudrykv/latex-yearly-planner/app/config"
+	"github.com/qwerkon/interactive-yearly-planner/app/components/cal"
+	"github.com/qwerkon/interactive-yearly-planner/app/components/header"
+	"github.com/qwerkon/interactive-yearly-planner/app/components/page"
+	"github.com/qwerkon/interactive-yearly-planner/app/config"
 )
 
 func Quarterly(cfg config.Config, tpls []string) (page.Modules, error) {

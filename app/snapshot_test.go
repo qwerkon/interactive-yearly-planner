@@ -58,7 +58,7 @@ events:
 		}
 	})
 
-	t.Setenv("PLANNER_YEAR", "2026")
+	setenv(t, "PLANNER_YEAR", "2026")
 	args := []string{"plannergen", "--preview", "--config", strings.Join(configFiles, ",")}
 	if err := New().RunContext(context.Background(), args); err != nil {
 		t.Fatal(err)
@@ -94,6 +94,21 @@ func assertSnapshot(t *testing.T, wantPath string, gotPath string) {
 	if string(got) != string(want) {
 		t.Fatalf("snapshot mismatch for %s; run UPDATE_SNAPSHOTS=1 go test ./app to update", filepath.Base(wantPath))
 	}
+}
+
+func setenv(t *testing.T, key string, value string) {
+	t.Helper()
+	previous, ok := os.LookupEnv(key)
+	if err := os.Setenv(key, value); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if ok {
+			_ = os.Setenv(key, previous)
+			return
+		}
+		_ = os.Unsetenv(key)
+	})
 }
 
 func repoRoot(t *testing.T) string {

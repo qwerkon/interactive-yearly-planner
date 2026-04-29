@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kudrykv/latex-yearly-planner/app/components/header"
-	"github.com/kudrykv/latex-yearly-planner/app/components/hyper"
-	"github.com/kudrykv/latex-yearly-planner/app/config"
-	"github.com/kudrykv/latex-yearly-planner/app/tex"
-	"github.com/kudrykv/latex-yearly-planner/app/texx"
+	"github.com/qwerkon/interactive-yearly-planner/app/components/header"
+	"github.com/qwerkon/interactive-yearly-planner/app/components/hyper"
+	"github.com/qwerkon/interactive-yearly-planner/app/config"
+	"github.com/qwerkon/interactive-yearly-planner/app/tex"
+	"github.com/qwerkon/interactive-yearly-planner/app/texx"
 )
 
 type Days []*Day

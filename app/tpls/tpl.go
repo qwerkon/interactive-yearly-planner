@@ -9,8 +9,8 @@ import (
 	"runtime"
 	"text/template"
 
-	"github.com/kudrykv/latex-yearly-planner/app/config"
-	"github.com/kudrykv/latex-yearly-planner/app/resources"
+	"github.com/qwerkon/interactive-yearly-planner/app/config"
+	"github.com/qwerkon/interactive-yearly-planner/app/resources"
 )
 
 var tpl = template.Must(baseTemplate().ParseGlob(templateGlob()))

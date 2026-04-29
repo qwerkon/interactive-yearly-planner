@@ -3,7 +3,7 @@ package note
 import (
 	"strconv"
 
-	"github.com/kudrykv/latex-yearly-planner/app/components/header"
+	"github.com/qwerkon/interactive-yearly-planner/app/components/header"
 )
 
 type Pages []Notes

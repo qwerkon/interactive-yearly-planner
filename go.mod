@@ -1,4 +1,4 @@
-module github.com/kudrykv/latex-yearly-planner
+module github.com/qwerkon/interactive-yearly-planner
 
 go 1.16
 

@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kudrykv/latex-yearly-planner/app"
-	"github.com/kudrykv/latex-yearly-planner/app/resources"
+	"github.com/qwerkon/interactive-yearly-planner/app"
+	"github.com/qwerkon/interactive-yearly-planner/app/resources"
 	"github.com/urfave/cli/v2"
 )
 
