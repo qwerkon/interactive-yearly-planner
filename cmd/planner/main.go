@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -48,6 +49,7 @@ func main() {
 		Commands: []*cli.Command{
 			buildCommand(false),
 			buildCommand(true),
+			buildAllCommand(),
 			{
 				Name:  "profiles",
 				Usage: "list available planner profiles",
@@ -85,6 +87,46 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+func buildAllCommand() *cli.Command {
+	return &cli.Command{
+		Name:  "build-all",
+		Usage: "build all planner profiles for one year",
+		Flags: commonFlags(),
+		Action: func(c *cli.Context) error {
+			if c.String("config") != "" {
+				return fmt.Errorf("--config cannot be used with build-all")
+			}
+			if c.String("name") != "" {
+				return fmt.Errorf("--name cannot be used with build-all")
+			}
+
+			year := c.Int("year")
+			if year == 0 {
+				year = time.Now().Year() + 1
+			}
+
+			for _, profileName := range profileNames() {
+				fmt.Printf("building %s for %d\n", profileName, year)
+				if err := runBuildForProfile(c, year, false, profileName); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		},
+	}
+}
+
+func profileNames() []string {
+	names := make([]string, 0, len(profiles))
+	for name := range profiles {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+
+	return names
 }
 
 func buildCommand(preview bool) *cli.Command {
@@ -126,9 +168,13 @@ func commonFlags() []cli.Flag {
 }
 
 func runBuild(c *cli.Context, year int, preview bool) error {
-	prof, ok := profiles[c.String("profile")]
+	return runBuildForProfile(c, year, preview, c.String("profile"))
+}
+
+func runBuildForProfile(c *cli.Context, year int, preview bool, profileName string) error {
+	prof, ok := profiles[profileName]
 	if !ok {
-		return fmt.Errorf("unknown profile %q", c.String("profile"))
+		return fmt.Errorf("unknown profile %q", profileName)
 	}
 
 	config := prof.Config

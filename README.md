@@ -221,6 +221,12 @@ Build a range of years:
 go run cmd/planner/main.go build-range --profile rm2-desk-weekly --from 2026 --to 2030 --lang polish --country PL
 ```
 
+Build every available profile for one year:
+
+```bash
+go run cmd/planner/main.go build-all --year 2026 --lang polish --country PL
+```
+
 ### Polish translation
 
 Polish translations are available through:
@@ -265,6 +271,12 @@ go run cmd/planner/main.go build --profile rm2-desk-weekly --year 2026 --lang po
 go run cmd/planner/main.go build-range --profile rm2-desk-weekly --from 2026 --to 2030 --lang polish --country PL
 ```
 
+5. Build all profiles for one year:
+
+```bash
+go run cmd/planner/main.go build-all --year 2026 --lang polish --country PL
+```
+
 Generated PDF files from the Go CLI are written to `pdf/`. The directory is kept in Git with `pdf/.gitkeep`, while generated files inside it are ignored.
 
 ### Scripts
@@ -272,14 +284,3 @@ Generated PDF files from the Go CLI are written to `pdf/`. The directory is kept
 `install.sh` checks whether `go` and `xelatex` are available. On Debian/Ubuntu systems it installs missing dependencies with `apt-get`.
 
 `cmd/planner` is the primary build entrypoint. It runs the Go planner generator, applies translations, compiles the generated LaTeX with XeLaTeX, and copies the final PDF to `--name` or the profile-derived output name.
-
-### Alternative install
-
-Instead of installing the dependencies manually, this repository is defined as a Nix flake which specifies fixed versions of all the required dependencies. 
-
-1. [Install Nix](https://nixos.org/download.html)
-2. Build a planner pdf using `nix build`
-3. Or, if you want to develop the code, enter a shell with all the dependencies present using `nix develop`
-   
-# Preview examples
-<img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/01_annual.png" width="419"><img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/02_quarter.png" width="419"><img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/03_month.png" width="419"><img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/04_week.png" width="419"><img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/05_day.png" width="419"><img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/06_day_notes.png" width="419"><img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/07_day_reflect.png" width="419"><img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/08_todos_index.png" width="419"><img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/09_todos_page.png" width="419"><img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/10_notes_index.png" width="419"><img src="https://github.com/kudrykv/latex-yearly-planner/blob/main/examples/pictures/sn_a5x.planner/11_notes_page.png" width="419">
