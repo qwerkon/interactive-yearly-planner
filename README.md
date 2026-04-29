@@ -17,15 +17,6 @@ I suggest looking at [rubify2](https://github.com/kudrykv/latex-yearly-planner/t
 It is an ongoing refactor, and it can generate MOS template.
 
 ## Quick Start Guide
-Here are the steps to quickly get the project up and running.
-
-* Note: if you are here just for the planners you can find pre-generated
- planners in [2022-2032 Planners Discussions](https://github.com/kudrykv/latex-yearly-planner/discussions/57).
-
-For the tinkerers, read on.
-
-The following was tested with [POP_OS 22.04.1 LTS](https://pop.system76.com/) under [Virtualbox](https://www.virtualbox.org/) version 6.1
-
 ### Install Dependencies
 1. [Go Language](https://go.dev/dl/)
 2. [LaTex](https://miktex.org/download) & [PDFLaTeX](https://www.latex-project.org/get/)
