@@ -4,7 +4,7 @@ set -euo pipefail
 
 missing_commands=()
 
-for cmd in go python3 xelatex; do
+for cmd in go xelatex; do
   if ! command -v "${cmd}" >/dev/null 2>&1; then
     missing_commands+=("${cmd}")
   fi
@@ -25,10 +25,6 @@ packages=()
 
 if ! command -v go >/dev/null 2>&1; then
   packages+=(golang-go)
-fi
-
-if ! command -v python3 >/dev/null 2>&1; then
-  packages+=(python3)
 fi
 
 if ! command -v xelatex >/dev/null 2>&1; then

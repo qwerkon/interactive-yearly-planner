@@ -8,6 +8,10 @@ publicholidays:
   countrycodes:
     - PL
   shownames: false
+  cachedir: cache/holidays
+
+events:
+  files: []
 
 layout:
   paper:
@@ -48,3 +52,25 @@ layout:
   colors:
     gray: gray
     lightgray: gray!45
+    saturday: gray!60!black
+    sunday: red!70!black
+    publicholiday: red!70!black
+
+  deskweekly:
+    starthour: 6
+    endhour: 22
+    hourlineheight: 4.25mm
+    columnpadding: 1mm
+    headerpadding: 1mm
+    headerheight: 13mm
+    minicalendarwidth: 4.25cm
+    daynumberfont: 18
+    weekdayfont: 6.5
+    hourfont: 5.5
+    holidaynamefont: 4.3
+    holidaymarker: \textbullet
+    eventmarker: '*'
+    showminicalendar: true
+    shownotes: false
+    showholidaymarker: true
+    showholidaylegend: true

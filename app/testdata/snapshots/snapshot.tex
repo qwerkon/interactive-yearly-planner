@@ -1,0 +1,137 @@
+\documentclass[9pt]{extarticle}
+
+\usepackage{geometry}
+\usepackage[table]{xcolor}
+
+\usepackage{calc}
+\usepackage{dashrule}
+\usepackage{setspace}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{varwidth}
+\usepackage{blindtext}
+\usepackage{tabularx}
+\usepackage{wrapfig}
+\usepackage{makecell}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{expl3}
+\usepackage{leading}
+\usepackage{pgffor}
+\usepackage{hyperref}
+\usepackage{marginnote}
+\usepackage{adjustbox}
+\usepackage{multido}
+
+\hypersetup{hidelinks=true}
+
+
+\geometry{paperwidth=20.9cm, paperheight=15.6cm}
+\geometry{
+  top=0.28cm,
+  bottom=0.35cm,
+  left=1.4cm,
+  right=0.3cm,
+  marginparwidth=0cm,
+  marginparsep=0cm
+}
+
+\pagestyle{empty}
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\parindent=0pt
+\fboxsep0pt
+
+\begin{document}
+
+\ExplSyntaxOn
+\cs_new_eq:NN \Repeat \prg_replicate:nn
+\ExplSyntaxOff
+
+\newcommand{\myMinLineHeight}[1]{\parbox{0pt}{\vskip#1}}
+\newcommand{\myDummyQ}{\textcolor{white}{Q}}\newcommand{\myNumArrayStretch}{1.15}
+\newcommand{\myNumQuarterlyLines}{38}
+\newcommand{\myNumDotHeightFull}{38}
+\newcommand{\myNumDotWidthFull}{30}
+\newcommand{\myNumDotWidthTwoThirds}{20}
+\newcommand{\myNumWeeklyLines}{12}
+\newcommand{\myNumDailyTodos}{8}
+\newcommand{\myNumDailyNotes}{27}
+\newcommand{\myNumDailyBottomHour}{8}
+\newcommand{\myNumDailyTopHour}{19}
+\newcommand{\myNumDailyDiaryGoals}{10}
+\newcommand{\myNumDailyDiaryGrateful}{4}
+\newcommand{\myNumDailyDiaryBest}{4}
+\newcommand{\myNumDailyDiaryLog}{26}
+\newcommand{\myNumDailyPersonal}{6}
+\newcommand{\myNumTodoLinesInTodoPage}{10}
+
+\newlength{\myLenTabColSep}
+\newlength{\myLenLineThicknessDefault}
+\newlength{\myLenLineThicknessThick}
+\newlength{\myLenLineHeightButLine}
+\newlength{\myLenTwoColSep}
+\newlength{\myLenTwoCol}
+\newlength{\myLenTriColSep}
+\newlength{\myLenTriCol}
+\newlength{\myLenFiveColSep}
+\newlength{\myLenFiveCol}
+\newlength{\myLenMonthlyCellHeight}
+\newlength{\myLenNotesIndexCellHeight}
+\newlength{\myLenHeaderResizeBox}
+\newlength{\myLenHeaderSideQuartersWidth}
+\newlength{\myLenHeaderSideMonthsWidth}\setlength{\myLenTabColSep}{2pt}
+\setlength{\myLenLineThicknessDefault}{.35pt}
+\setlength{\myLenLineThicknessThick}{.75pt}
+\setlength{\myLenLineHeightButLine}{\dimexpr4.1mm-.35pt}
+\setlength{\myLenTwoColSep}{5pt}
+\setlength{\myLenTwoCol}{\dimexpr.5\linewidth-.5\myLenTwoColSep}
+\setlength{\myLenFiveColSep}{5pt}
+\setlength{\myLenFiveCol}{\dimexpr.2\linewidth-\myLenFiveColSep}
+\setlength{\myLenMonthlyCellHeight}{1.62cm}
+\setlength{\myLenTriColSep}{3pt}
+\setlength{\myLenTriCol}{\dimexpr.333\linewidth-.667\myLenTriColSep}
+\setlength{\myLenNotesIndexCellHeight}{1.45cm}
+\setlength{\myLenHeaderResizeBox}{5.5mm}
+\setlength{\myLenHeaderSideQuartersWidth}{4cm}
+\setlength{\myLenHeaderSideMonthsWidth}{14.5cm}
+
+\newcommand{\myQuarterlySpring}{\textcolor{white}{..}}
+\newcommand{\myMonthlySpring}{}
+\newcommand{\myDailySpring}{\textcolor{white}{.}}
+\newcommand{\myColorGray}{gray}
+\newcommand{\myColorLightGray}{gray!45}
+
+\newcommand{\myLinePlain}{\hrule width \linewidth height \myLenLineThicknessDefault}
+\newcommand{\myLineThick}{\hrule width \linewidth height \myLenLineThicknessThick}
+
+\newcommand{\myLineHeightButLine}{\myMinLineHeight{\myLenLineHeightButLine}}
+\newcommand{\myUnderline}[1]{#1\vskip1mm\myLineThick\par}
+\newcommand{\myLineColor}[1]{\textcolor{#1}{\myLinePlain}}
+\newcommand{\myLineGray}{\myLineColor{\myColorGray}}
+\newcommand{\myLineLightGray}{\myLineColor{\myColorLightGray}}
+\newcommand{\myLineGrayVskipBottom}{\myLineGray\vskip\myLenLineHeightButLine}
+\newcommand{\myLineGrayVskipTop}{\vskip\myLenLineHeightButLine\myLineGray}
+
+\newcommand{\myTodo}{\myLineHeightButLine$\square$\myLinePlain}
+\newcommand{\myTodoLineGray}{\myLineHeightButLine$\square$\myLineGray}
+
+\newcommand{\myDotGrid}[2]{\leavevmode\multido{\dC=0mm+5mm}{#1}{\multido{\dR=0mm+5mm}{#2}{\put(\dR,\dC){\circle*{0.1}}}}}
+
+\newcommand{\myMash}[3][]{\Repeat{#2}{\myLineGrayVskipTop}}
+
+\newcommand{\remainingHeight}{%
+  \ifdim\pagegoal=\maxdimen
+  \dimexpr\textheight-9.4pt\relax
+  \else
+  \dimexpr\pagegoal-\pagetotal-\lineskip-9.4pt\relax
+  \fi%
+}
+
+  \include{title}
+  \include{annual}
+  \include{monthly}
+  \include{weekly}
+  
+\end{document}

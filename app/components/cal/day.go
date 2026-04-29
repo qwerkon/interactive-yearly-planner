@@ -40,14 +40,23 @@ func (d Day) Day(today, large interface{}, args ...interface{}) string {
 	}
 
 	day := strconv.Itoa(d.Time.Day())
-	if d.Time.Weekday() == time.Saturday {
-		day = `\textcolor{gray!60!black}{` + day + `}`
-	}
-	if d.Time.Weekday() == time.Sunday {
-		day = `\textcolor{red!70!black}{` + day + `}`
-	}
-	if cfg != nil && cfg.PublicHolidays.IsPublicHoliday(d.Time) {
-		day = `\textcolor{red!70!black}{` + strconv.Itoa(d.Time.Day()) + `}`
+	if cfg != nil {
+		if d.Time.Weekday() == time.Saturday {
+			day = `\textcolor{` + cfg.Layout.Colors.Saturday + `}{` + day + `}`
+		}
+		if d.Time.Weekday() == time.Sunday {
+			day = `\textcolor{` + cfg.Layout.Colors.Sunday + `}{` + day + `}`
+		}
+		if cfg.PublicHolidays.IsPublicHoliday(d.Time) {
+			day = `\textcolor{` + cfg.Layout.Colors.PublicHoliday + `}{` + strconv.Itoa(d.Time.Day()) + `}`
+		}
+	} else {
+		if d.Time.Weekday() == time.Saturday {
+			day = `\textcolor{gray!60!black}{` + day + `}`
+		}
+		if d.Time.Weekday() == time.Sunday {
+			day = `\textcolor{red!70!black}{` + day + `}`
+		}
 	}
 
 	if larg, _ := large.(bool); larg {
@@ -64,11 +73,18 @@ func (d Day) Day(today, large interface{}, args ...interface{}) string {
 }
 
 func (d Day) HeaderColor(cfg config.Config) string {
-	if cfg.PublicHolidays.IsPublicHoliday(d.Time) || d.Time.Weekday() == time.Sunday {
-		return "red!70!black"
+	if holiday, ok := cfg.PublicHolidays.Holiday(d.Time); ok {
+		if holiday.IsEvent() && !holiday.IsPublic() {
+			return cfg.Layout.Colors.Event
+		}
+
+		return cfg.Layout.Colors.PublicHoliday
+	}
+	if d.Time.Weekday() == time.Sunday {
+		return cfg.Layout.Colors.PublicHoliday
 	}
 	if d.Time.Weekday() == time.Saturday {
-		return "gray!60!black"
+		return cfg.Layout.Colors.Saturday
 	}
 
 	return ""
@@ -84,7 +100,30 @@ func (d Day) HolidayLocalName(cfg config.Config) string {
 		return ""
 	}
 
-	return holiday.LocalName
+	if holiday.ShortName != "" {
+		return holiday.ShortName
+	}
+	if holiday.LocalName != "" {
+		return holiday.LocalName
+	}
+
+	return holiday.Name
+}
+
+func (d Day) HolidayMarker(cfg config.Config) string {
+	if !cfg.Layout.DeskWeekly.ShowHolidayMarker {
+		return ""
+	}
+
+	holiday, ok := cfg.PublicHolidays.Holiday(d.Time)
+	if !ok {
+		return ""
+	}
+	if holiday.IsEvent() && !holiday.IsPublic() {
+		return cfg.Layout.DeskWeekly.EventMarker
+	}
+
+	return cfg.Layout.DeskWeekly.HolidayMarker
 }
 
 func (d Day) weekRef() string {

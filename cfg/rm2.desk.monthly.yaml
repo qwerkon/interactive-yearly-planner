@@ -1,0 +1,10 @@
+layout:
+  lengths:
+    monthlycellheight: 1.62cm
+  deskmonthly:
+    headerfont: 15
+    subheaderfont: 7
+    sidepanelwidth: 4.2cm
+    legendfont: 5.5
+    showlegend: true
+    showsidepanel: true

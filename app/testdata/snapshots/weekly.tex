@@ -1,0 +1,91 @@
+\noindent
+\begin{minipage}[t]{\dimexpr\linewidth-4.25cm-3mm}
+  \vspace{1mm}
+  {\fontsize{13}{13}\selectfont\textbf{January}}\hspace{2mm}{\large \hypertarget{Week 1}{Week 1}}
+  \vspace{1mm}
+
+  \myLineThick
+\end{minipage}%
+\hfill%
+\begin{minipage}[t]{4.25cm}
+  \raggedleft
+  \tiny
+  {%
+\renewcommand{\arraystretch}{\myNumArrayStretch}%
+\setlength{\tabcolsep}{\myLenTabColSep}%
+%
+\begin{tabularx}{\linewidth}{Y|*{7}{Y}}
+  \multicolumn{8}{c}{\hyperlink{January}{January}} \\ \hline
+  
+  W & M & T & W & T & F & S & S \\ \hline
+  \hyperlink{Week 1}{1} &&&&\hyperlink{Week 1}{1}&\hyperlink{Week 1}{2}&\hyperlink{Week 1}{\textcolor{gray!60!black}{3}}&\hyperlink{Week 1}{\textcolor{red!70!black}{4}}\\ 
+  \hyperlink{Week 2}{2} &\hyperlink{Week 2}{5}&\hyperlink{Week 2}{6}&\hyperlink{Week 2}{7}&\hyperlink{Week 2}{\textcolor{red!70!black}{8}}&\hyperlink{Week 2}{9}&\hyperlink{Week 2}{\textcolor{gray!60!black}{10}}&\hyperlink{Week 2}{\textcolor{red!70!black}{11}}\\ 
+  \hyperlink{Week 3}{3} &\hyperlink{Week 3}{12}&\hyperlink{Week 3}{13}&\hyperlink{Week 3}{14}&\hyperlink{Week 3}{15}&\hyperlink{Week 3}{16}&\hyperlink{Week 3}{\textcolor{gray!60!black}{17}}&\hyperlink{Week 3}{\textcolor{red!70!black}{18}}\\ 
+  \hyperlink{Week 4}{4} &\hyperlink{Week 4}{19}&\hyperlink{Week 4}{20}&\hyperlink{Week 4}{21}&\hyperlink{Week 4}{22}&\hyperlink{Week 4}{23}&\hyperlink{Week 4}{\textcolor{gray!60!black}{24}}&\hyperlink{Week 4}{\textcolor{red!70!black}{25}}\\ 
+  \hyperlink{Week 5}{5} &\hyperlink{Week 5}{26}&\hyperlink{Week 5}{27}&\hyperlink{Week 5}{28}&\hyperlink{Week 5}{29}&\hyperlink{Week 5}{30}&\hyperlink{Week 5}{\textcolor{gray!60!black}{31}}&\\ 
+  \end{tabularx}}
+
+\end{minipage}
+
+\vspace{1mm}
+
+\setlength{\tabcolsep}{0pt}%
+\renewcommand{\arraystretch}{1}%
+\providecommand{\deskDayHeader}[4]{%
+  \begin{minipage}[t][13mm][t]{\dimexpr\linewidth-1mm-1mm\relax}%
+    \vspace{1mm}%
+    \hspace*{1mm}{\fontsize{18}{18}\selectfont\textbf{#1}}\hfill{\fontsize{4.3}{4.7}\selectfont #4}\\[-.7mm]
+    \hspace*{1mm}{\fontsize{6.5}{7}\selectfont #2}%
+    \if\relax\detokenize{#3}\relax\else\\[-.4mm]
+      \hspace*{1mm}{\fontsize{4.3}{4.7}\selectfont #3}%
+    \fi%
+  \end{minipage}%
+}
+\providecommand{\deskHourLine}[1]{%
+  \vbox to 4.25mm{%
+    \vfill%
+    \hbox to \linewidth{%
+      \makebox[7mm][l]{\fontsize{5.5}{6}\selectfont\textcolor{gray}{#1}}%
+      \textcolor{gray!45}{\leaders\hrule height \myLenLineThicknessDefault\hfill}%
+    }%
+    \vfill%
+  }%
+}
+\providecommand{\deskDayColumn}[2]{%
+  \hspace*{1mm}%
+  \begin{minipage}[t]{\dimexpr\linewidth-1mm-1mm\relax}%
+    \vspace*{1mm}%
+    #1%
+    \deskHourLine{06:00}%
+    \deskHourLine{07:00}%
+    \deskHourLine{08:00}%
+    \deskHourLine{09:00}%
+    \deskHourLine{10:00}%
+    \deskHourLine{11:00}%
+    \deskHourLine{12:00}%
+    \deskHourLine{13:00}%
+    \deskHourLine{14:00}%
+    \deskHourLine{15:00}%
+    \deskHourLine{16:00}%
+    \deskHourLine{17:00}%
+    \deskHourLine{18:00}%
+    \deskHourLine{19:00}%
+    \deskHourLine{20:00}%
+    \deskHourLine{21:00}%
+    \deskHourLine{22:00}%
+    #2%
+    \vspace*{1mm}%
+  \end{minipage}%
+  \hspace*{1mm}%
+}
+\providecommand{\deskHolidayLegend}{%
+  {\fontsize{5}{6}\selectfont\textcolor{red!70!black}{\textbullet~holiday}\hspace{2mm}\textcolor{red!70!black}{*~event}}\vspace{.6mm}
+}
+
+\deskHolidayLegend
+
+\begin{tabularx}{\linewidth}{*{7}{|>{\raggedright\arraybackslash}X}|}
+\hline\deskDayHeader{29}{Monday}{}{} & \deskDayHeader{30}{Tuesday}{}{} & \deskDayHeader{31}{Wednesday}{}{} & \deskDayHeader{1}{Thursday}{}{} & \deskDayHeader{2}{Friday}{}{} & \textcolor{gray!60!black}{\deskDayHeader{3}{Saturday}{}{}} & \textcolor{red!70!black}{\deskDayHeader{4}{Sunday}{}{}}\\ \hline\deskDayColumn{}{} & \deskDayColumn{}{} & \deskDayColumn{}{} & \deskDayColumn{}{} & \deskDayColumn{}{} & \deskDayColumn{}{} & \deskDayColumn{}{}\\ \hline
+\end{tabularx}
+
+\pagebreak

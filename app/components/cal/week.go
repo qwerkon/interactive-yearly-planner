@@ -146,6 +146,31 @@ func (w *Week) WeekNumberText(large interface{}) string {
 	return `\rotatebox[origin=tr]{90}{\makebox[\myLenMonthlyCellHeight][c]{Week ` + itoa + `}}`
 }
 
+func (w *Week) WeekNumberDay(large interface{}) string {
+	wn := w.weekNumber()
+	larg, _ := large.(bool)
+
+	itoa := strconv.Itoa(wn)
+	ref := w.firstDayRef()
+	if !larg {
+		return hyper.Link(ref, itoa)
+	}
+
+	text := `\rotatebox[origin=tr]{90}{\makebox[\myLenMonthlyCellHeight][c]{Week ` + itoa + `}}`
+
+	return hyper.Link(ref, text)
+}
+
+func (w *Week) firstDayRef() string {
+	for _, day := range w.Days {
+		if !day.Time.IsZero() {
+			return day.ref()
+		}
+	}
+
+	return w.ref()
+}
+
 func (w *Week) weekNumber() int {
 	_, wn := w.Days[0].Time.ISOWeek()
 

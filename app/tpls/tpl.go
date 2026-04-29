@@ -4,45 +4,60 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"path/filepath"
+	"runtime"
 	"text/template"
 
 	"github.com/kudrykv/latex-yearly-planner/app/config"
 )
 
-var tpl = template.Must(template.New("").Funcs(template.FuncMap{
-	"dict": func(values ...interface{}) (map[string]interface{}, error) {
-		if len(values)%2 != 0 {
-			return nil, errors.New("invalid dict call")
-		}
-		dict := make(map[string]interface{}, len(values)/2)
-		for i := 0; i < len(values); i += 2 {
-			key, ok := values[i].(string)
-			if !ok {
-				return nil, errors.New("dict keys must be strings")
+var tpl = template.Must(baseTemplate().ParseGlob(templateGlob()))
+
+func baseTemplate() *template.Template {
+	return template.New("").Funcs(template.FuncMap{
+		"dict": func(values ...interface{}) (map[string]interface{}, error) {
+			if len(values)%2 != 0 {
+				return nil, errors.New("invalid dict call")
+			}
+			dict := make(map[string]interface{}, len(values)/2)
+			for i := 0; i < len(values); i += 2 {
+				key, ok := values[i].(string)
+				if !ok {
+					return nil, errors.New("dict keys must be strings")
+				}
+
+				dict[key] = values[i+1]
 			}
 
-			dict[key] = values[i+1]
-		}
+			return dict, nil
+		},
 
-		return dict, nil
-	},
+		"incr": func(i int) int {
+			return i + 1
+		},
 
-	"incr": func(i int) int {
-		return i + 1
-	},
+		"dec": func(i int) int {
+			return i - 1
+		},
 
-	"dec": func(i int) int {
-		return i - 1
-	},
+		"is": func(i interface{}) bool {
+			if value, ok := i.(bool); ok {
+				return value
+			}
 
-	"is": func(i interface{}) bool {
-		if value, ok := i.(bool); ok {
-			return value
-		}
+			return i != nil
+		},
+	})
+}
 
-		return i != nil
-	},
-}).ParseGlob(`./tpls/*`))
+func templateGlob() string {
+	_, file, _, ok := runtime.Caller(0)
+	if !ok {
+		return `./tpls/*`
+	}
+
+	return filepath.Join(filepath.Dir(file), "..", "..", "tpls", "*")
+}
 
 type Tpl struct {
 	tpl *template.Template
